@@ -35,7 +35,7 @@ module.exports = {
 		const time = interaction.options.getString('time') || `${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}`;
 		const dateFormat = interaction.options.getString('format') || 'UTC';
 
-		const requestedDate = new Date(`${date} ${time} ${dateFormat}`)
+		const requestedDate = new Date(`${date} ${time} ${dateFormat}`);
 
         const currentTimestamp = Math.round(requestedDate/1000);
 		await interaction.reply(`<t:${currentTimestamp}:${type}>`);
