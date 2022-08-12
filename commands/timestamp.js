@@ -15,7 +15,7 @@ module.exports = {
 		)
 		.addStringOption(option => 
 			option.setName('date')
-			.setDescription('DD/MM/YYYY')
+			.setDescription('MM/DD/YYYY')
 			.setRequired(false)
 		)
 		.addStringOption(option =>
@@ -27,6 +27,15 @@ module.exports = {
 			option.setName('format')
 				.setDescription('Format date provided. Default is UTC. (UTC, EST, PST, GMT+ etc)')
 				.setRequired(false)
+		)
+		.addStringOption(option =>
+			option.setName('escaped')
+				.setDescription('Send an escaped string')
+				.setRequired(false)
+				.addChoices(
+					{ name: 'True', value: 'true' },
+					{ name: 'False', value: 'false' }
+				)
 		),
 	async execute(interaction) {
 		const currentDate = new Date();
@@ -34,12 +43,16 @@ module.exports = {
 		const date = interaction.options.getString('date') || `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
 		const time = interaction.options.getString('time') || `${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}`;
 		const dateFormat = interaction.options.getString('format') || 'UTC';
-
+		const escaped = interaction.options.getString('escaped') || false;
+		
 		const requestedDate = new Date(`${date} ${time} ${dateFormat}`);
 
         const currentTimestamp = Math.round(requestedDate/1000);
-		await interaction.reply(`<t:${currentTimestamp}:${type}>`);
+		if (escaped) {
+			await interaction.reply(`\`\`\`<t:${currentTimestamp}:${type}>\`\`\``);
+		} else {
+			await interaction.reply(`<t:${currentTimestamp}:${type}>`);
+		}
 
-		console.log(type, date, time)
 	},
 };
