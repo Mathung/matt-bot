@@ -3,10 +3,10 @@ const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('timestamp')
-		.setDescription('Replies with the current local time.')
+		.setDescription('Replies a unix timestamp. Defaults to current time/date.')
 		.addStringOption(option => 
 			option.setName('type')
-				.setDescription('Type of timestamp')
+				.setDescription('Local or reference')
 				.setRequired(false)
 				.addChoices(
 					{ name: 'Local', value: 'f' },
@@ -28,14 +28,10 @@ module.exports = {
 				.setDescription('Format date provided. Default is UTC. (UTC, EST, PST, GMT+ etc)')
 				.setRequired(false)
 		)
-		.addStringOption(option =>
-			option.setName('escaped')
+		.addBooleanOption(option =>
+			option.setName('escape')
 				.setDescription('Send an escaped string')
 				.setRequired(false)
-				.addChoices(
-					{ name: 'True', value: 'true' },
-					{ name: 'False', value: 'false' }
-				)
 		),
 	async execute(interaction) {
 		const currentDate = new Date();
@@ -43,7 +39,7 @@ module.exports = {
 		const date = interaction.options.getString('date') || `${currentDate.getMonth()+1}/${currentDate.getDate()}/${currentDate.getFullYear()}`;
 		const time = interaction.options.getString('time') || `${currentDate.getUTCHours()}:${currentDate.getUTCMinutes()}`;
 		const dateFormat = interaction.options.getString('format') || 'UTC';
-		const escaped = interaction.options.getString('escaped') || false;
+		const escaped = interaction.options.getBoolean('escape');
 		
 		const requestedDate = new Date(`${date} ${time} ${dateFormat}`);
 
